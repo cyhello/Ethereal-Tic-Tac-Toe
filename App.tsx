@@ -17,6 +17,7 @@ const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>(INITIAL_STATE);
   const [gameMode, setGameMode] = useState<GameMode>('PvE');
   const [difficulty, setDifficulty] = useState<Difficulty>('Normal');
+  const [showHints, setShowHints] = useState(true);
   const [isThinking, setIsThinking] = useState(false);
   const [history, setHistory] = useState<GameState[]>([]);
 
@@ -124,6 +125,18 @@ const App: React.FC = () => {
             <option value="Genius (AI)">Difficulty: Genius (Gemini)</option>
           </select>
         )}
+
+        <button
+          onClick={() => setShowHints(!showHints)}
+          className={`px-4 py-2 rounded-lg border transition-all flex items-center gap-2 ${
+            showHints 
+              ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300 shadow-[0_0_10px_rgba(99,102,241,0.2)]' 
+              : 'bg-black/40 border-white/10 text-gray-400 hover:text-white'
+          }`}
+          title="Highlight the mark that will disappear next"
+        >
+          <span className="text-sm font-medium">Hints {showHints ? 'ON' : 'OFF'}</span>
+        </button>
       </div>
 
       {/* Status Bar */}
@@ -148,6 +161,7 @@ const App: React.FC = () => {
           {gameState.board.map((cell, idx) => {
             const isWinningCell = gameState.winningLine?.includes(idx);
             const isExpiring = (cell === 'X' && expiringX === idx) || (cell === 'O' && expiringO === idx);
+            const showExpiringEffect = showHints && isExpiring && !gameState.winner;
             
             return (
               <button
@@ -158,7 +172,7 @@ const App: React.FC = () => {
                   w-20 h-20 sm:w-24 sm:h-24 rounded-2xl flex items-center justify-center text-4xl font-black transition-all duration-300
                   ${!cell && !gameState.winner && !isThinking ? 'hover:bg-white/10 cursor-pointer' : 'cursor-default'}
                   ${isWinningCell ? 'bg-green-500/30 ring-4 ring-green-500 scale-105' : 'bg-black/40'}
-                  ${isExpiring && !gameState.winner ? 'expiring-mark border-2 border-dashed border-red-500/50' : 'border border-white/5'}
+                  ${showExpiringEffect ? 'expiring-mark border-2 border-dashed border-red-500/50' : 'border border-white/5'}
                 `}
               >
                 {cell === 'X' && (
@@ -195,10 +209,12 @@ const App: React.FC = () => {
 
       {/* Rules Indicator */}
       <div className="mt-12 flex flex-col items-center gap-4 text-sm text-gray-500">
-         <div className="flex items-center gap-2">
-            <div className="w-3 h-3 border border-dashed border-red-500/50 rounded expiring-mark"></div>
-            <span>Flashing = Mark will vanish on your next move</span>
-         </div>
+         {showHints && (
+           <div className="flex items-center gap-2">
+              <div className="w-3 h-3 border border-dashed border-red-500/50 rounded expiring-mark"></div>
+              <span>Flashing = Mark will vanish on your next move</span>
+           </div>
+         )}
          <p>© 2024 Advanced Logic Games</p>
       </div>
     </div>
