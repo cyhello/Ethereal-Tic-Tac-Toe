@@ -1,5 +1,5 @@
 {
-  "name": "Ethereal Tic-Tac-Toe (Moving Marks)",
-  "description": "A strategic variant of Tic-Tac-Toe where players only have three marks. Placing a fourth mark causes your oldest one to vanish! Features local multiplayer and an AI opponent powered by Gemini.",
+  "name": "Terry's Web",
+  "description": "Terry's personal space featuring AI-powered classic strategy games and learning resources.",
   "requestFramePermissions": []
 }

@@ -18,7 +18,3 @@ View your app in AI Studio: https://ai.studio/apps/drive/17uZJQ6hObYIzrxLGnK_gBp
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
-
-## Deploy to 宝塔 (Auto Deploy on Push)
-
-To deploy to a 宝塔 server and auto-publish on every push to `main`, see **[DEPLOY.md](DEPLOY.md)** for setup (GitHub Actions + SSH).

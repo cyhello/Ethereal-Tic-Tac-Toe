@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { GameMode, Difficulty, GameState, Player } from '../types';
 import { getNextState, getSmartMove, MAX_MARKS } from '../logic/gameLogic';
+import { getGeminiMove } from '../services/geminiService';
 
 const INITIAL_STATE: GameState = {
   board: Array(9).fill(null),
@@ -33,13 +34,26 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
 
   // AI Logic
   useEffect(() => {
-    if (gameMode === 'PvE' && gameState.currentPlayer === 'O' && !gameState.winner) {
+    if (gameMode === 'PvE' && gameState.currentPlayer === 'O' && !gameState.winner && !isThinking) {
       const triggerAI = async () => {
         setIsThinking(true);
-        // Artificial delay for realism
-        await new Promise(resolve => setTimeout(resolve, 800));
+        let moveIndex = -1;
 
-        const moveIndex = getSmartMove(gameState, difficulty);
+        try {
+          if (difficulty === 'Genius (AI)') {
+            // Use Gemini for Genius difficulty
+            moveIndex = await getGeminiMove(gameState);
+          } else {
+            // Artificial delay for local AI to feel natural
+            await new Promise(resolve => setTimeout(resolve, 800));
+            moveIndex = getSmartMove(gameState, difficulty);
+          }
+        } catch (error) {
+          console.error("AI Error:", error);
+          // Fallback to local logic if Gemini fails
+          moveIndex = getSmartMove(gameState, difficulty);
+        }
+
         if (moveIndex !== -1) {
           handleMove(moveIndex);
         }
@@ -47,7 +61,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
       };
       triggerAI();
     }
-  }, [gameState.currentPlayer, gameState.winner, gameMode, difficulty, handleMove, gameState]);
+  }, [gameState.currentPlayer, gameState.winner, gameMode, difficulty, handleMove, isThinking, gameState]);
 
   const resetGame = () => {
     setGameState(INITIAL_STATE);
@@ -56,7 +70,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
   };
 
   const undoMove = () => {
-    if (history.length > 0) {
+    if (history.length > 0 && !isThinking) {
       setGameState(history[history.length - 1]);
       setHistory(prev => prev.slice(0, -1));
     }
@@ -110,7 +124,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
           >
             <option value="Easy">Easy</option>
             <option value="Normal">Normal</option>
-            <option value="Genius (AI)">Genius</option>
+            <option value="Genius (AI)">Genius (AI)</option>
           </select>
         )}
 
@@ -135,7 +149,13 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
           <div className="flex items-center gap-2">
             <span className={`w-4 h-4 rounded-full ${gameState.currentPlayer === 'X' ? 'bg-cyan-400' : 'bg-purple-500'} shadow-[0_0_15px_rgba(34,211,238,0.5)]`}></span>
             <span className="text-gray-200">
-              {isThinking ? "AI is plotting..." : `${gameState.currentPlayer}'s Turn`}
+              {isThinking ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-pulse">AI is plotting...</span>
+                </span>
+              ) : (
+                `${gameState.currentPlayer}'s Turn`
+              )}
             </span>
           </div>
         )}
@@ -158,6 +178,7 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
                   ${!cell && !gameState.winner && !isThinking ? 'hover:bg-white/10 cursor-pointer' : 'cursor-default'}
                   ${isWinningCell ? 'bg-green-500/30 ring-4 ring-green-500 scale-105' : 'bg-black/40'}
                   ${showExpiringEffect ? 'expiring-mark border-2 border-dashed border-red-500/50' : 'border border-white/5'}
+                  ${isThinking && !cell ? 'opacity-50' : ''}
                 `}
               >
                 {cell === 'X' && <span className="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]">X</span>}
