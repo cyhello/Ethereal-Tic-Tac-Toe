@@ -19,6 +19,11 @@ View your app in AI Studio: https://ai.studio/apps/drive/17uZJQ6hObYIzrxLGnK_gBp
 3. Run the app:
    `npm run dev`
 
+## 中国大陆访问说明
+
+- **静态资源**：页面不再依赖 `cdn.tailwindcss.com`、`esm.sh` 等在国内可能较慢或不可用的 CDN。Tailwind 已改为通过 Vite 打包；import map 已改为使用支持国内加速的 [esm.run](https://esm.run)（jsDelivr 网络）。
+- **Gemini API**：在中国大陆无法直接访问 Google 服务，与 AI 对战功能会因网络原因失败。此时应用会自动退化为随机落子，不影响单机/双人对战。
+
 ## Deploy
 
 Deployment is automated via GitHub Actions on push to `main` or `master` (see `.github/workflows/deploy.yml`). Configure `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, and `DEPLOY_PATH` in the repo’s Actions secrets.

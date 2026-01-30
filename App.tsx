@@ -1,10 +1,17 @@
 
-import React, { useState } from 'react';
-import TicTacToe from './games/TicTacToe';
-import Reversi from './games/Reversi';
+import React, { useState, Suspense, lazy } from 'react';
+
+const TicTacToe = lazy(() => import('./games/TicTacToe'));
+const Reversi = lazy(() => import('./games/Reversi'));
 
 // Define the structure of the site navigation
 type Page = 'home' | 'games-menu' | 'learning' | 'tictactoe' | 'reversi';
+
+const PageFallback = () => (
+  <div className="flex min-h-screen items-center justify-center text-gray-400">
+    <span className="animate-pulse">Loading...</span>
+  </div>
+);
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
@@ -12,11 +19,19 @@ const App: React.FC = () => {
   // --- Routing Logic ---
 
   if (currentPage === 'tictactoe') {
-    return <TicTacToe onBack={() => setCurrentPage('games-menu')} />;
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <TicTacToe onBack={() => setCurrentPage('games-menu')} />
+      </Suspense>
+    );
   }
 
   if (currentPage === 'reversi') {
-    return <Reversi onBack={() => setCurrentPage('games-menu')} />;
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <Reversi onBack={() => setCurrentPage('games-menu')} />
+      </Suspense>
+    );
   }
 
   // --- Helper Components ---
