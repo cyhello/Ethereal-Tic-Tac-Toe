@@ -70,9 +70,13 @@ const Reversi: React.FC<ReversiProps> = ({ onBack }) => {
   const whiteCount = gameState.board.filter(c => c === 'White').length;
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto animate-fade-in py-8">
-      <button onClick={onBack} className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center gap-2 transition-colors z-20">
-        ← Back to Menu
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto animate-fade-in pt-20 pb-8 relative z-10">
+      <button 
+        onClick={onBack} 
+        className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group z-50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 bg-black/20"
+      >
+        <span className="group-hover:-translate-x-1 transition-transform">←</span>
+        Back
       </button>
 
       <div className="mb-6 text-center">

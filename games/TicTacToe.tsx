@@ -88,16 +88,20 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
   const expiringO = getExpiringIndex('O');
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto animate-fade-in">
-       <button onClick={onBack} className="absolute top-4 left-4 text-gray-400 hover:text-white flex items-center gap-2 transition-colors">
-        ← Back to Menu
+    <div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto animate-fade-in pt-20 pb-8 relative z-10">
+      <button 
+        onClick={onBack} 
+        className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group z-50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 bg-black/20"
+      >
+        <span className="group-hover:-translate-x-1 transition-transform">←</span>
+        Back
       </button>
 
       <div className="mb-6 text-center">
-        <h1 className="text-4xl font-extrabold font-heading bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 mb-2">
+        <h1 className="text-5xl font-extrabold font-heading bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 mb-2 drop-shadow-[0_0_15px_rgba(34,211,238,0.3)]">
           Ethereal Tic-Tac-Toe
         </h1>
-        <p className="text-gray-400 text-sm">3 marks limit. Oldest vanishes.</p>
+        <p className="text-gray-400 text-sm tracking-widest uppercase font-semibold">3 marks limit • Oldest vanishes</p>
       </div>
 
       <div className="bg-white/5 border border-white/10 p-4 rounded-2xl backdrop-blur-md mb-8 flex flex-wrap gap-4 justify-center items-center">
@@ -130,13 +134,14 @@ const TicTacToe: React.FC<TicTacToeProps> = ({ onBack }) => {
 
         <button
           onClick={() => setShowHints(!showHints)}
-          className={`px-4 py-2 rounded-lg border transition-all ${
+          className={`px-4 py-2 rounded-lg border transition-all flex items-center gap-2 ${
             showHints 
               ? 'bg-indigo-600/20 border-indigo-500 text-indigo-300' 
               : 'bg-black/40 border-white/10 text-gray-400 hover:text-white'
           }`}
         >
-          {showHints ? 'Hints ON' : 'Hints OFF'}
+          <div className={`w-2 h-2 rounded-full ${showHints ? 'bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]' : 'bg-gray-600'}`}></div>
+          Hints
         </button>
       </div>
 

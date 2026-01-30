@@ -1,61 +1,54 @@
 
-import React, { useState, Suspense, lazy } from 'react';
-
-const TicTacToe = lazy(() => import('./games/TicTacToe'));
-const Reversi = lazy(() => import('./games/Reversi'));
+import React, { useState } from 'react';
+import TicTacToe from './games/TicTacToe';
+import Reversi from './games/Reversi';
 
 // Define the structure of the site navigation
 type Page = 'home' | 'games-menu' | 'learning' | 'tictactoe' | 'reversi';
 
-const PageFallback = () => (
-  <div className="flex min-h-screen items-center justify-center text-gray-400">
-    <span className="animate-pulse">Loading...</span>
-  </div>
-);
-
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('home');
-
-  // --- Routing Logic ---
-
-  if (currentPage === 'tictactoe') {
-    return (
-      <Suspense fallback={<PageFallback />}>
-        <TicTacToe onBack={() => setCurrentPage('games-menu')} />
-      </Suspense>
-    );
-  }
-
-  if (currentPage === 'reversi') {
-    return (
-      <Suspense fallback={<PageFallback />}>
-        <Reversi onBack={() => setCurrentPage('games-menu')} />
-      </Suspense>
-    );
-  }
 
   // --- Helper Components ---
 
   const BackButton = ({ to }: { to: Page }) => (
     <button 
       onClick={() => setCurrentPage(to)}
-      className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group z-50"
+      className="absolute top-6 left-6 flex items-center gap-2 text-gray-400 hover:text-white transition-colors group z-50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/5 bg-black/20"
     >
       <span className="group-hover:-translate-x-1 transition-transform">←</span>
       Back
     </button>
   );
 
+  const BackgroundDecor = () => (
+    <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+      <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/20 rounded-full blur-[128px] animate-pulse"></div>
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-cyan-600/20 rounded-full blur-[128px] animate-pulse" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-[40%] left-[40%] w-[30%] h-[30%] bg-pink-600/10 rounded-full blur-[96px] animate-pulse" style={{ animationDelay: '4s' }}></div>
+    </div>
+  );
+
   // --- Views ---
+
+  const renderContent = () => {
+    switch (currentPage) {
+      case 'tictactoe':
+        return <TicTacToe onBack={() => setCurrentPage('games-menu')} />;
+      case 'reversi':
+        return <Reversi onBack={() => setCurrentPage('games-menu')} />;
+      case 'games-menu':
+        return renderGamesMenu();
+      case 'learning':
+        return renderLearning();
+      case 'home':
+      default:
+        return renderHome();
+    }
+  };
 
   const renderHome = () => (
     <div className="flex flex-col items-center justify-center min-h-screen relative p-4 animate-fade-in">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[128px]"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[128px]"></div>
-      </div>
-
       <div className="text-center mb-16 relative z-10">
         <h1 className="text-7xl md:text-8xl font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 mb-6 drop-shadow-[0_0_25px_rgba(168,85,247,0.5)]">
           Terry's Web
@@ -65,11 +58,11 @@ const App: React.FC = () => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl px-4 relative z-10">
         {/* Games Entry */}
         <button
           onClick={() => setCurrentPage('games-menu')}
-          className="group relative h-64 rounded-3xl overflow-hidden border border-white/10 bg-gray-900/50 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(6,182,212,0.3)] backdrop-blur-sm"
+          className="group relative h-64 rounded-3xl overflow-hidden border border-white/10 bg-gray-900/40 hover:border-cyan-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(6,182,212,0.3)] backdrop-blur-sm"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
@@ -83,7 +76,7 @@ const App: React.FC = () => {
         {/* Learning Entry */}
         <button
           onClick={() => setCurrentPage('learning')}
-          className="group relative h-64 rounded-3xl overflow-hidden border border-white/10 bg-gray-900/50 hover:border-pink-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(236,72,153,0.3)] backdrop-blur-sm"
+          className="group relative h-64 rounded-3xl overflow-hidden border border-white/10 bg-gray-900/40 hover:border-pink-500/50 transition-all duration-500 hover:shadow-[0_0_40px_rgba(236,72,153,0.3)] backdrop-blur-sm"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-pink-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
@@ -95,14 +88,14 @@ const App: React.FC = () => {
         </button>
       </div>
 
-      <footer className="absolute bottom-8 text-gray-600 text-sm">
+      <footer className="absolute bottom-8 text-gray-600 text-sm z-10">
         © {new Date().getFullYear()} Terry. All rights reserved.
       </footer>
     </div>
   );
 
   const renderGamesMenu = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in relative z-10">
       <BackButton to="home" />
       
       <div className="text-center mb-12">
@@ -114,7 +107,7 @@ const App: React.FC = () => {
         {/* Tic Tac Toe Card */}
         <button
           onClick={() => setCurrentPage('tictactoe')}
-          className="group relative bg-gray-900/80 border border-white/10 p-8 rounded-3xl hover:border-cyan-500/50 transition-all duration-500 text-left hover:-translate-y-2"
+          className="group relative bg-gray-900/60 border border-white/10 p-8 rounded-3xl hover:border-cyan-500/50 transition-all duration-500 text-left hover:-translate-y-2 backdrop-blur-md"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
           <div className="relative z-10">
@@ -136,7 +129,7 @@ const App: React.FC = () => {
         {/* Reversi Card */}
         <button
           onClick={() => setCurrentPage('reversi')}
-          className="group relative bg-gray-900/80 border border-white/10 p-8 rounded-3xl hover:border-purple-500/50 transition-all duration-500 text-left hover:-translate-y-2"
+          className="group relative bg-gray-900/60 border border-white/10 p-8 rounded-3xl hover:border-purple-500/50 transition-all duration-500 text-left hover:-translate-y-2 backdrop-blur-md"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-transparent opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
           <div className="relative z-10">
@@ -159,7 +152,7 @@ const App: React.FC = () => {
   );
 
   const renderLearning = () => (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in relative">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 animate-fade-in relative z-10">
       <BackButton to="home" />
       
       <div className="text-center mb-12">
@@ -196,10 +189,9 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen text-white font-sans selection:bg-pink-500 selection:text-white">
-      {currentPage === 'home' && renderHome()}
-      {currentPage === 'games-menu' && renderGamesMenu()}
-      {currentPage === 'learning' && renderLearning()}
+    <div className="min-h-screen text-white font-sans selection:bg-pink-500 selection:text-white relative">
+      <BackgroundDecor />
+      {renderContent()}
     </div>
   );
 };
