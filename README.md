@@ -19,10 +19,8 @@ View your app in AI Studio: https://ai.studio/apps/drive/17uZJQ6hObYIzrxLGnK_gBp
 3. Run the app:
    `npm run dev`
 
-## Deploy to 宝塔 (Auto Deploy on Push)
+## Deploy
 
-To deploy to a 宝塔 server and auto-publish on every push to `main`, see **[DEPLOY.md](DEPLOY.md)** for setup (GitHub Actions + SSH).
+Deployment is automated via GitHub Actions on push to `main` or `master` (see `.github/workflows/deploy.yml`). Configure `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_SSH_KEY`, and `DEPLOY_PATH` in the repo’s Actions secrets.
 
----
-
-**⚠️ Do not delete or modify:** The `.github/workflows/deploy.yml` file and the `.github/` directory are required for automatic deployment. Removing them will break CI/CD. Please leave these files unchanged when editing the project.
+**⚠️ Do not delete or modify:** The `.github/workflows/deploy.yml` file and the `.github/` directory are required for automatic deployment. Removing them will break CI/CD.
