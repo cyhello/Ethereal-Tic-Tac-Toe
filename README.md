@@ -22,3 +22,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/17uZJQ6hObYIzrxLGnK_gBp
 ## Deploy to 宝塔 (Auto Deploy on Push)
 
 To deploy to a 宝塔 server and auto-publish on every push to `main`, see **[DEPLOY.md](DEPLOY.md)** for setup (GitHub Actions + SSH).
+
+---
+
+**⚠️ Do not delete or modify:** The `.github/workflows/deploy.yml` file and the `.github/` directory are required for automatic deployment. Removing them will break CI/CD. Please leave these files unchanged when editing the project.
